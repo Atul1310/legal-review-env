@@ -1,3 +1,14 @@
+
+---
+title: Legal Review Env
+emoji: "⚖️"
+colorFrom: blue
+colorTo: purple
+sdk: docker
+sdk_version: "latest"
+app_port: 7860
+pinned: false
+---
 # ⚖️ Legal Document Review — OpenEnv Environment
 
 > Train and evaluate AI agents on real-world contract review — one of the most cognitively demanding tasks a legal professional performs daily.
