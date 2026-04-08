@@ -1,0 +1,95 @@
+name: legal-document-review
+version: "1.0.0"
+description: >
+  An OpenEnv environment simulating real-world legal contract review.
+  Agents must read contracts, identify problematic clauses, flag genuine issues
+  (while avoiding red herrings), propose redlines, and determine correct
+  document disposition across NDA, SaaS, and M&A acquisition tasks.
+
+tags:
+  - openenv
+  - legal
+  - contract-review
+  - nlp
+  - real-world
+
+tasks:
+  - name: nda_standard
+    difficulty: easy
+    max_steps: 20
+    description: >
+      Review a standard mutual NDA. One clause has an uncapped unlimited
+      liability provision that must be flagged and redlined.
+    expected_score_range: [0.55, 0.80]
+
+  - name: saas_agreement
+    difficulty: medium
+    max_steps: 30
+    description: >
+      Review a SaaS subscription agreement with multiple real issues
+      (short notice period, unfavorable auto-renewal, IP ownership grab,
+      no data export right) plus one red herring (standard payment terms).
+      A missing DPA clause must also be identified.
+    expected_score_range: [0.40, 0.70]
+
+  - name: acquisition_loi
+    difficulty: hard
+    max_steps: 40
+    description: >
+      Review an M&A letter of intent with two critical hidden traps:
+      (1) Revenue definition for earnout effectively makes it illusory,
+      (2) Buyer has unlimited unilateral right to extend exclusivity.
+      Multiple red herrings included. Agent must check definitions carefully.
+    expected_score_range: [0.20, 0.55]
+
+action_space:
+  diagnostic:
+    - read_clause
+    - search_document
+    - check_definitions
+    - request_info
+  analysis:
+    - flag_issue
+    - clear_flag
+    - assess_risk
+  remediation:
+    - propose_redline
+    - accept_clause
+    - reject_clause
+  document_level:
+    - approve_document
+    - reject_document
+    - escalate
+    - request_revision
+
+observation_space:
+  - document_title
+  - document_type
+  - clauses (list of Clause objects with id, title, text, status)
+  - flagged_issues (list of Issue objects)
+  - missing_clauses
+  - definitions
+  - action_result
+  - step_number / max_steps
+  - last_action_error
+
+reward_range: [-0.25, 0.10]
+episode_score_range: [0.0, 1.0]
+
+endpoints:
+  reset: POST /reset
+  step: POST /step
+  state: GET /state
+  score: GET /score
+  health: GET /health
+
+server:
+  port: 7860
+  framework: fastapi
+  python: "3.10"
+
+authors:
+  - name: OpenEnv Hackathon Submission
+    email: ""
+
+license: Apache-2.0
