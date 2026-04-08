@@ -7,7 +7,7 @@ from __future__ import annotations
 import uuid
 from typing import Any, Dict, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -80,12 +80,17 @@ async def root():
     }
 
 
+# ✅ FIXED RESET ENDPOINT (important change)
 @app.post("/reset")
-async def reset(req: ResetRequest) -> dict:
+async def reset(req: Optional[ResetRequest] = Body(default=None)) -> dict:
     global _active_episode
 
+    task_name = "nda_standard"
+    if req and req.task_name:
+        task_name = req.task_name
+
     env = LegalReviewEnvironment()
-    obs = env.reset(req.task_name)
+    obs = env.reset(task_name)
     episode_id = str(uuid.uuid4())
 
     _episodes[episode_id] = env
