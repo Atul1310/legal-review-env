@@ -33,3 +33,7 @@ include = ["legal_review_env*", "server*"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+
+
+[project.scripts]
+server = "server.app:main"
